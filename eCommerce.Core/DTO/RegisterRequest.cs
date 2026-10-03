@@ -7,7 +7,7 @@ public record RegisterRequest(
     GenderOptions Gender
     )
 {
-    public RegisterRequest() : this(null, null, null, GenderOptions.None)
+    public RegisterRequest() : this(null, null, null, default)
     {
     }
 }

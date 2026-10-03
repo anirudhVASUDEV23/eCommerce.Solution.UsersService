@@ -21,7 +21,20 @@ builder.Services.AddControllers()
 //Adding the AutoMapper service to the DI container and specifying the assembly containing the mapping profiles
 builder.Services.AddAutoMapper(cfg=>{ },typeof(ApplicationUserMappingProfile).Assembly);
 
+//Add API Explorer services
+builder.Services.AddEndpointsApiExplorer();
 
+//Add swager genereation services
+builder.Services.AddSwaggerGen();
+
+//Add cors services
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -30,7 +43,13 @@ app.UseExceptionHandlingMiddleware();
 
 //Routing
 app.UseRouting();
+app.UseSwagger();//Adds endpoint tha can serve the swagger.json
+app.UseSwaggerUI();//Adds swagger UI (interactive page)
 
+//Enabling CORS
+app.UseCors(
+    
+    );
 
 //Auth
 app.UseAuthentication();
