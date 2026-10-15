@@ -48,7 +48,6 @@ app.UseSwaggerUI();//Adds swagger UI (interactive page)
 
 //Enabling CORS
 app.UseCors(
-    
     );
 
 //Auth

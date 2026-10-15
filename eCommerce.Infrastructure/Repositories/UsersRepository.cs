@@ -18,13 +18,19 @@ namespace eCommerce.Infrastructure.Repositories
         {
             //Generate a new UserID
             user.UserID = Guid.NewGuid();
-            string query= "INSERT INTO public.\"Users\" (\"UserID\", \"Email\", \"Password\", \"PersonName\", \"Gender\") VALUES (@UserID, @Email, @Password, @PersonName, @Gender)";
+            string query = """
+            INSERT INTO public."Users"
+                ("UserID", "Email", "Password", "PersonName", "Gender")
+            VALUES
+                (@UserID, @Email, @Password, @PersonName, @Gender)
+            """;
+
             int rowCountAffected = await _dapperDbContext.DbConnection.ExecuteAsync(query, user);
             if(rowCountAffected>0)
             {
                 return user;
             }
-            else
+            else 
             {
                 return null;
             }
@@ -32,10 +38,26 @@ namespace eCommerce.Infrastructure.Repositories
 
         public async Task<ApplicationUser?> GetUserByEmailAndPassword(string? email, string? password)
         {
-            string query = "SELECT * FROM public.\"Users\" WHERE \"Email\" = @Email AND \"Password\" = @Password";
+            string query = """
+            SELECT *
+            FROM public."Users"
+            WHERE "Email" = @Email
+              AND "Password" = @Password
+            """;
             var parameters = new { Email = email, Password = password };
             ApplicationUser? user=await _dapperDbContext.DbConnection.QueryFirstOrDefaultAsync<ApplicationUser>(query, parameters);
             return user;
+        }
+
+        public async Task<ApplicationUser?> GetUserByUserID(Guid? userID)
+        {
+            var query = """
+                SELECT * FROM public."Users" WHERE "UserID"=@userID
+                """;
+
+            var parameters = new { UserID = userID };
+            using var connection = _dapperDbContext.DbConnection;
+            return await connection.QueryFirstOrDefaultAsync<ApplicationUser>(query, parameters);
         }
     }
 }
